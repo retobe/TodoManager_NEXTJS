@@ -41,7 +41,7 @@ export default function TodosList() {
   }, []);
 
   return (
-    <div className="shadow-lg bg-gradient-to-b  from-gray-400 to-gray-50 mx-auto w-[90%] max-w-[500px] p-3 rounded-md">
+    <div className="shadow-lg bg-gradient-to-b from-slate-400 to-slate-200 mx-auto w-[90%] max-w-[500px] p-3 rounded-md">
       <h1 className="text-2xl text-center">Todos List</h1>
       <ol className="list-decimal px-5 flex flex-col gap-2">
         {todos.map((todo) => (
@@ -54,7 +54,7 @@ export default function TodosList() {
         ))}
       </ol>
       <br />
-      <footer className="opacity-[.50]">Total Tasks: {todos.length}</footer>
+      <footer className="opacity-[.50] text-black font-bold">Total Tasks: {todos.length}</footer>
     </div>
   );
 }

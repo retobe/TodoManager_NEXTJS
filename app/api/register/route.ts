@@ -28,6 +28,12 @@ export async function POST(request: Request) {
     email = removeWhitespace(email);
     password = removeWhitespace(password);
 
+    if (!username || !email || !password) {
+      return NextResponse.json({
+        error: `No credentials were provided.`,
+      });
+    }
+
     const existingUser = await prismadb.user.findFirst({
       where: {
         OR: [
@@ -48,7 +54,7 @@ export async function POST(request: Request) {
     }
 
     /**
-     * Server side creditnals check
+     * Server side credentials check
      */
 
     var loginToken = `${randomUUID()}`;

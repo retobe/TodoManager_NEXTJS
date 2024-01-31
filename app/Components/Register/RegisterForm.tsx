@@ -1,5 +1,5 @@
 "use client";
-import React, { FormEvent } from "react";
+import React, { FormEvent, useState } from "react";
 import Link from "next/link";
 
 var headers = new Headers();
@@ -47,6 +47,24 @@ const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
 };
 
 const RegisterForm = () => {
+  const handlePasswordChange = () => {
+    const passwordInput = document.querySelector(
+      "#password"
+    ) as HTMLInputElement | null;
+    const checkboxElement = document.querySelector(
+      "#passwordShow"
+    ) as HTMLInputElement | null;
+    if (passwordInput && checkboxElement) {
+      if (checkboxElement.checked === true) {
+        setPasswordType("text");
+      } else {
+        setPasswordType("password");
+      }
+    }
+  };
+
+  const [passwordType, setPasswordType] = useState("password");
+
   return (
     <div className="absolute bg-slate-300 w-full h-full">
       <form
@@ -94,13 +112,22 @@ const RegisterForm = () => {
               Password:{" "}
             </label>
             <input
-              type="password"
+              type={passwordType}
               name="password"
               minLength={8}
               maxLength={30}
               id="password"
               placeholder="Password"
               className="px-3 py-1 outline-none rounded-lg shadow-md focus:placeholder:text-transparent overflow-auto sm:max-w-[15rem] max-w-[10rem]"
+            />
+          </div>
+          <div className="opacity-[.7] text-sm flex gap-3 items-center justify-end">
+            <label htmlFor="passwordShow">Show Password: </label>
+            <input
+              onChange={handlePasswordChange}
+              type="checkbox"
+              name="passwordShow"
+              id="passwordShow"
             />
           </div>
         </div>

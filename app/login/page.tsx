@@ -6,7 +6,6 @@ import isLogged from "../Components/isLogged";
 
 const page = () => {
   React.useEffect(() => {
-    // Call isLogged when the component mounts
     isLogged();
   }, []);
 

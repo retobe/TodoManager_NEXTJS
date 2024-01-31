@@ -5,7 +5,6 @@ import isLogged from "./Components/isLogged";
 
 export default async function Home() {
   useEffect(() => {
-    // Call isLogged when the component mounts
     isLogged();
   }, []);
 
