@@ -1,8 +1,9 @@
 "use client";
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState, useEffect, ChangeEvent } from "react";
 import TodosList from "../Components/TodosList";
 import isLogged from "../Components/isLogged";
 import RemoveAllTodos from "../Components/RemoveAllTodos";
+import EnableAlerts from "../Components/EnableAlerts";
 
 export default async function Home() {
   const createTodo = async (event: FormEvent<HTMLFormElement>) => {
@@ -34,7 +35,12 @@ export default async function Home() {
         return;
       }
 
-      alert("Success! Refreshing for results.");
+      if (
+        localStorage.getItem("alerts") === "true" ||
+        localStorage.getItem("alerts") == null
+      ) {
+        alert("Success! Refreshing for results.");
+      }
       window.location.reload();
     } catch (e) {
       console.error(e);
@@ -62,7 +68,12 @@ export default async function Home() {
         return;
       }
 
-      alert("Success! I have removed Todo ID: " + requestData.todoId + ".");
+      if (
+        localStorage.getItem("alerts") === "true" ||
+        localStorage.getItem("alerts") == null
+      ) {
+        alert("Success! I have removed Todo ID: " + requestData.todoId + ".");
+      }
       window.location.reload();
     } catch (e) {
       console.error(e);
@@ -90,10 +101,14 @@ export default async function Home() {
         alert(data.error);
       }
 
-      if (data.message) {
-        alert(data.message);
+      if (
+        localStorage.getItem("alerts") === "true" ||
+        localStorage.getItem("alerts") == null
+      ) {
+        if (data.message) {
+          alert(data.message);
+        }
       }
-
       window.location.reload();
     } catch (e) {
       console.error(e);
@@ -115,6 +130,9 @@ export default async function Home() {
 
   return (
     <div className="absolute w-full h-[110%] min-h-full text-white">
+      <div className="settings text-black p-2">
+        <EnableAlerts></EnableAlerts>
+      </div>
       <div className="mt-2"></div>
       <TodosList></TodosList>
       <div className="container flex flex-wrap gap-4 items-center justify-center mx-auto mt-2 p-3">
