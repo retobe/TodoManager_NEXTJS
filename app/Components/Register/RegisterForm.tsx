@@ -34,6 +34,7 @@ const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
         });
 
         const data = await response.json();
+        console.log(data);
         if (data.status === 403) {
           return alert(
             "Profile Pictures aren't available at this time, use the default one as of right now."
@@ -52,7 +53,6 @@ const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
   } else {
     requestData.avatar =
       "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
-    console.log("Reached Else statement no avatar found.");
   }
 
   try {
