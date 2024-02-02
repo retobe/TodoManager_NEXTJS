@@ -38,7 +38,21 @@ const validateUsername = (username: string): boolean => {
 const removeWhitespace = (value: string): string =>
   value.toString().replace(/\s/g, "");
 
+const validImage = (file: File): boolean => {
+  if (!file.type || typeof file.type !== "string") {
+    return false;
+  }
+
+  const fileType = file.type.toLowerCase();
+  const avatarSize: number = parseInt((file.size / (1024 * 1024)).toFixed(2));
+
+  const allowedFileTypes = ["image/png", "image/jpeg", "image/gif"];
+
+  return allowedFileTypes.includes(fileType) && avatarSize < 5;
+};
+
 export {
+  validImage,
   isLoginTokenUnique,
   validateEmail,
   removeWhitespace,

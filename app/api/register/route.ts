@@ -22,7 +22,9 @@ export async function POST(request: Request) {
 
     const data = await request.json();
 
-    let { username, email, password } = data.requestData;
+    let { username, email, password, avatar } = data.requestData;
+
+    console.log(data.requestData);
 
     username = removeWhitespace(username.toLowerCase());
     email = removeWhitespace(email);
@@ -99,6 +101,7 @@ export async function POST(request: Request) {
         username,
         email,
         password,
+        avatar: `${avatar}`,
         loginToken: loginToken,
       },
     });

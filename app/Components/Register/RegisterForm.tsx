@@ -1,6 +1,9 @@
 "use client";
-import React, { FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import profilePicDefault from "../../../public/profile_pic.jpg";
+import { validImage } from "@/app/helpers/Utils";
 
 var headers = new Headers();
 headers.append("Accept", "application/json");
@@ -9,10 +12,48 @@ const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
   event.preventDefault();
   const formData = new FormData(event.target as HTMLFormElement);
   const requestData = {
+    avatar: formData.get("avatar") as File | string,
     username: formData.get("username")?.toString().replace(/\s/g, ""),
     email: formData.get("email")?.toString().replace(/\s/g, ""),
     password: formData.get("password")?.toString().replace(/\s/g, ""),
   };
+
+  if (typeof requestData.avatar === "object" && requestData.avatar.size != 0) {
+    if (!validImage(requestData.avatar as File)) {
+      return alert(
+        "Invalid Avatar! Image size is above 5mbs or isn't an image."
+      );
+    } else {
+      try {
+        const response = await fetch(`https://api.imgur.com/3/image/`, {
+          method: "POST",
+          headers: {
+            Authorization: "Client-ID " + process.env.IMGUR_API_ID,
+          },
+          body: requestData.avatar,
+        });
+
+        const data = await response.json();
+        if (data.status === 403) {
+          return alert(
+            "Profile Pictures aren't available at this time, use the default one as of right now."
+          );
+        }
+        if (data.status != 200) {
+          alert("Failed to convert file into database.");
+        } else {
+          requestData.avatar = data.data.link;
+        }
+      } catch (e) {
+        alert("Failed to convert file into database.");
+        console.error(e);
+      }
+    }
+  } else {
+    requestData.avatar =
+      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+    console.log("Reached Else statement no avatar found.");
+  }
 
   try {
     const response = await fetch(`/api/register`, {
@@ -47,6 +88,27 @@ const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
 };
 
 const RegisterForm = () => {
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  //Change the preview of the avatar
+  const fileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const fileInput = event.target;
+
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        if (e.target) {
+          setProfilePic(e.target.result as string);
+        }
+      };
+
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      setProfilePic(null); // Clear the profilePic if no file is selected
+    }
+  };
+
+  // Show and hide password in the form function
   const handlePasswordChange = () => {
     const passwordInput = document.querySelector(
       "#password"
@@ -75,6 +137,25 @@ const RegisterForm = () => {
           User Registeration
         </h1>
         <div className="inputs flex flex-col gap-3 w-full p-3 mx-auto">
+          <div
+            id="avatar"
+            className="flex items-center justify-center gap-3 w-full mx-auto flex-col"
+          >
+            <label htmlFor="avatar">Avatar (OPTIONAL)</label>
+            <Image
+              src={profilePic || profilePicDefault}
+              alt="Image Preview"
+              className="object-cover rounded-[50%] shadow-xl w-[100px] h-[100px]"
+              width={100}
+              height={100}
+            />
+            <input
+              type="file"
+              onChange={fileChange}
+              name="avatar"
+              id="avatar"
+            />
+          </div>
           <div className="username flex items-center justify-between gap-3 w-full">
             <label
               htmlFor="username"
